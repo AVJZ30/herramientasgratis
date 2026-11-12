@@ -1,1 +1,1048 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#130922"><title>AVJ Compress | Herramientas gratuitas</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top,#422066,#0c0716 70%);color:white;font:16px/1.6 system-ui,sans-serif}main{max-width:570px;text-align:center;background:#1c102c;border:1px solid #654192;border-radius:25px;padding:45px 25px}h1{font-size:clamp(28px,5vw,44px);margin:10px 0}p{color:#cbb9dc}.icon{font-size:58px}a{color:white;display:inline-block;padding:12px 18px;border-radius:12px;background:#8143df;text-decoration:none;font-weight:750;margin:8px}a.secondary{background:#332046}</style></head><body><main><div class="icon">🗜️</div><h1>AVJ Compress</h1><p>Esta carpeta está reservada para el compresor de imágenes y videos enviado.</p><p>Integración del programa completo pendiente.</p><a class="secondary" href="../../index.html">← Volver a herramientas</a><p><small>by AVJ COMUNITY</small></p></main></body></html>
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#09090b" />
+  <link rel="icon" type="image/jpeg" href="https://i.pinimg.com/736x/99/66/4d/99664dcd7c44a28d1f3c0eecaadec421.jpg" />
+  <link rel="apple-touch-icon" href="https://i.pinimg.com/736x/99/66/4d/99664dcd7c44a28d1f3c0eecaadec421.jpg" />
+  <meta property="og:image" content="https://i.pinimg.com/736x/99/66/4d/99664dcd7c44a28d1f3c0eecaadec421.jpg" />
+  <meta name="description" content="AVJ COMPRESS: comprime fotos y videos online gratis y sin registro. No subimos ni almacenamos tus archivos; se procesan de forma privada en tu navegador." />
+  <link id="canonicalLink" rel="canonical" href="" />
+  <script>
+    if (location.protocol === 'https:' || location.protocol === 'http:') {
+      document.getElementById('canonicalLink').href = location.origin + location.pathname.replace(/index\.html$/i, '');
+    }
+  </script>
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AVJ COMPRESS" />
+  <meta property="og:title" content="AVJ COMPRESS — Comprimir imágenes y videos online gratis" />
+  <meta property="og:description" content="Gratis, sin registro y sin almacenar tus archivos. Comprime imágenes y videos en tu navegador." />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="AVJ COMPRESS — Image & Video Compressor" />
+  <meta name="twitter:description" content="Free, private, browser-based image and video compression." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AVJ COMPRESS",
+    "description": "Compresor de fotos y videos gratis y sin registro. Los archivos se procesan localmente: no se suben ni almacenan en servidores de AVJ COMPRESS.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+    "browserRequirements": "JavaScript enabled; modern browser with Canvas and WebAssembly",
+    "inLanguage": ["es", "en"],
+    "offers": {"@type":"Offer","price":"0","priceCurrency":"USD"},
+    "featureList": ["Comprimir JPG y JPEG", "Comprimir PNG", "Comprimir WebP", "Comprimir videos MP4", "Ajustar video a WhatsApp, Telegram, Signal, Messenger y correo", "Tamaño objetivo en MB o KB", "Convertir imágenes a WebP", "Descargar imágenes comprimidas en ZIP", "Procesamiento local sin enviar archivos"]
+  }
+  </script>
+  <title>AVJ COMPRESS — Compresor multimedia privado</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { boxShadow: { glow: '0 0 50px rgba(124,58,237,.18)' } } }
+    }
+  </script>
+
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,58,237,.14), transparent 32rem),
+        radial-gradient(circle at 90% 20%, rgba(14,165,233,.08), transparent 28rem),
+        #09090b;
+    }
+    .glass { background: rgba(24,24,27,.72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.08); }
+    .drop-active { border-color: rgb(139 92 246) !important; background: rgba(124,58,237,.10) !important; transform: scale(1.005); }
+    .view { display: none; }
+    @keyframes dialogIn { from {opacity:0;transform:translateY(20px) scale(.96)} to {opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes dialogOut { from {opacity:1;transform:translateY(0) scale(1)} to {opacity:0;transform:translateY(12px) scale(.97)} }
+    @keyframes veilIn {from {opacity:0} to {opacity:1}}
+    @keyframes veilOut {from {opacity:1} to {opacity:0}}
+    #socialModal.dialog-open {animation:veilIn .3s ease both}
+    #socialModal.dialog-open > .glass {animation:dialogIn .42s cubic-bezier(.2,.9,.25,1.2) both}
+    #socialModal.dialog-closing {animation:veilOut .26s ease both;pointer-events:none}
+    #socialModal.dialog-closing > .glass {animation:dialogOut .26s ease both}
+    .social-icon {width:20px;height:20px;flex:none}
+    #policyModal:not(.hidden) {display:flex}
+    @media (prefers-reduced-motion: reduce) {#socialModal.dialog-open,#socialModal.dialog-open > .glass,#socialModal.dialog-closing,#socialModal.dialog-closing > .glass{animation:none}}
+    .glass, .rounded-3xl { transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+    .glass:hover { border-color: rgba(167,139,250,.24); }
+    button, a, select { transition: color .2s ease, background-color .2s ease, transform .2s ease, filter .2s ease, border-color .2s ease; }
+    button:active, a:active { transform: scale(.98); }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 18px rgba(139,92,246,.16) } 50% { box-shadow: 0 0 32px rgba(139,92,246,.36) } }
+    #view-home h1 { animation: rise .6s both ease-out; }
+    #view-home > div > p { animation: rise .7s .07s both ease-out; }
+    #view-home .group { animation: rise .6s .13s both ease-out; }
+    #brandBtn > div:first-child { animation: glowPulse 4s ease-in-out infinite; }
+    .preview-before-after { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
+    .preview-before-after img { height:156px; width:100%; object-fit:contain; background:rgba(0,0,0,.24); border-radius:12px; }
+    @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+    .view.active { display: block; animation: fadeIn .22s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .spinner { width: 18px; height: 18px; border-radius: 999px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    input[type="range"] { accent-color: #8b5cf6; }
+    video, img { max-width: 100%; }
+  </style>
+</head>
+
+<body class="min-h-screen text-zinc-100 antialiased selection:bg-violet-500/30">
+  <header class="sticky top-0 z-40 border-b border-white/5 bg-zinc-950/70 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+      <button id="brandBtn" class="flex items-center gap-3 text-left">
+        <div class="h-11 w-11 overflow-hidden rounded-2xl border border-violet-500/30 bg-zinc-900 shadow-glow">
+          <img src="https://i.pinimg.com/736x/99/66/4d/99664dcd7c44a28d1f3c0eecaadec421.jpg" alt="Logo AVJ COMPRESS" class="h-full w-full object-cover" width="44" height="44" decoding="async" />
+        </div>
+        <div>
+          <p class="font-semibold tracking-tight">AVJ COMPRESS</p>
+          <p class="text-xs text-zinc-500">Privado · Local · Sin backend</p>
+        </div>
+      </button>
+      <div class="flex items-center gap-2">
+        <button data-nav="home" class="nav-btn rounded-xl px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white">Inicio</button>
+        <button data-nav="video" class="nav-btn hidden rounded-xl px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white sm:inline-flex">Video</button>
+        <button data-nav="image" class="nav-btn hidden rounded-xl px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white sm:inline-flex">Imagen</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
+    <!-- HOME -->
+    <section id="view-home" class="view active">
+      <div class="mx-auto max-w-5xl text-center">
+        <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          100% gratis · Sin registro · Sin subir archivos
+        </div>
+        <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white sm:text-6xl">
+          Comprime multimedia
+          <span class="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">sin perder privacidad</span>
+        </h1>
+        <p class="mx-auto mt-5 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg">
+          Comprime videos e imágenes <strong class="text-zinc-200">gratis y sin registro</strong>, directamente en tu navegador. Sin cuentas, sin subir archivos y sin backend.
+        </p>
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          <button data-nav="video" class="group glass rounded-3xl p-7 text-left transition hover:-translate-y-1 hover:border-violet-500/40 hover:shadow-glow">
+            <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/15 text-violet-300">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="14" height="14" rx="3"/><path d="m17 10 4-2v8l-4-2z"/></svg>
+            </div>
+            <h2 class="text-xl font-semibold">Comprimir Video</h2>
+            <p class="mt-2 text-sm leading-6 text-zinc-400">Comprime MP4, MOV y WebM, o ajústalo al límite de WhatsApp, Telegram, correo o un tamaño exacto.</p>
+            <div class="mt-6 flex items-center gap-2 text-sm font-medium text-violet-300">Abrir compresor <span class="transition-transform group-hover:translate-x-1">→</span></div>
+          </button>
+          <button data-nav="image" class="group glass rounded-3xl p-7 text-left transition hover:-translate-y-1 hover:border-sky-500/40">
+            <div class="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-sky-500/15 text-sky-300">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m4 17 5-5 4 4 2-2 5 4"/></svg>
+            </div>
+            <h2 class="text-xl font-semibold">Comprimir Imagen</h2>
+            <p class="mt-2 text-sm leading-6 text-zinc-400">Procesamiento instantáneo con Canvas, conversión y descarga ZIP.</p>
+            <div class="mt-6 flex items-center gap-2 text-sm font-medium text-sky-300">Abrir compresor <span class="transition-transform group-hover:translate-x-1">→</span></div>
+          </button>
+        </div>
+        <div class="mt-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-2xl border border-white/5 bg-white/[.025] p-4 text-left">
+            <p class="text-sm font-medium text-zinc-200">100% local</p>
+            <p class="mt-1 text-xs leading-5 text-zinc-500">Los archivos permanecen en tu dispositivo.</p>
+          </div>
+          <div class="rounded-2xl border border-white/5 bg-white/[.025] p-4 text-left">
+            <p class="text-sm font-medium text-zinc-200">Sin límites artificiales</p>
+            <p class="mt-1 text-xs leading-5 text-zinc-500">El límite real depende de la memoria de tu navegador.</p>
+          </div>
+          <div class="rounded-2xl border border-white/5 bg-white/[.025] p-4 text-left">
+            <p class="text-sm font-medium text-zinc-200">Sin instalación</p>
+            <p class="mt-1 text-xs leading-5 text-zinc-500">Ideal para Netlify o cualquier hosting estático.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEO -->
+    <section id="view-video" class="view">
+      <div class="mb-7 flex items-start justify-between gap-4">
+        <div>
+          <button data-nav="home" class="mb-3 text-sm text-zinc-500 hover:text-white">← Volver</button>
+          <h1 class="text-3xl font-bold tracking-tight">Comprimir video</h1>
+          <p class="mt-2 text-sm text-zinc-400">Procesamiento local con FFmpeg.wasm. La primera carga descarga el motor WebAssembly.</p>
+        </div>
+      </div>
+
+      <div id="fileProtocolWarning" class="mb-5 hidden rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-200">
+        Para comprimir video, abre esta página desde <b>http://</b> o <b>https://</b> (por ejemplo, Netlify). Algunos navegadores bloquean WebAssembly/Workers desde <b>file://</b>.
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
+        <div class="space-y-5">
+          <div id="videoDrop" class="glass cursor-pointer rounded-3xl border-2 border-dashed border-white/10 p-8 text-center transition">
+            <input id="videoInput" type="file" class="hidden" accept="video/*,.mov,.mkv,.avi,.m4v" />
+            <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/15 text-violet-300">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+            </div>
+            <p class="mt-4 font-medium">Arrastra tu video aquí</p>
+            <p class="mt-1 text-sm text-zinc-500">o haz clic para seleccionar</p>
+            <p class="mt-3 text-xs text-zinc-600">MP4 · MOV · WebM · MKV · AVI · M4V</p>
+          </div>
+
+          <div id="videoFileCard" class="hidden rounded-2xl border border-white/5 bg-white/[.025] p-4">
+            <video id="videoOriginalPreview" controls playsinline preload="metadata" class="mb-4 aspect-video w-full rounded-xl bg-black object-contain"></video>
+            <p class="mb-3 text-xs text-zinc-500">Vista previa del video original (antes de comprimir)</p>
+            <div class="flex items-center justify-between gap-4">
+              <div class="min-w-0">
+                <p id="videoFileName" class="truncate text-sm font-medium"></p>
+                <p id="videoFileMeta" class="mt-1 text-xs text-zinc-500"></p>
+              </div>
+              <button id="clearVideoBtn" class="rounded-lg px-3 py-2 text-xs text-zinc-400 hover:bg-white/5 hover:text-white">Quitar</button>
+            </div>
+          </div>
+
+          <div class="glass rounded-3xl p-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label class="mb-2 block text-sm font-medium">Preset de calidad</label>
+                <select id="videoPreset" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-3 text-sm outline-none focus:border-violet-500">
+                  <option value="high">Alta calidad</option>
+                  <option value="medium" selected>Media — recomendado</option>
+                  <option value="low">Baja — archivo pequeño</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-2 block text-sm font-medium">Resolución máxima</label>
+                <select id="videoResolution" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-3 text-sm outline-none focus:border-violet-500">
+                  <option value="original">Mantener original</option>
+                  <option value="1080">1080p</option>
+                  <option value="720" selected>720p</option>
+                  <option value="480">480p</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <label class="mb-2 block text-sm font-medium">Ajustar a un tamaño máximo</label>
+              <select id="videoTarget" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-3 text-sm outline-none focus:border-violet-500">
+                <option value="">Sin límite (usar preset de calidad)</option>
+                <optgroup label="Mensajería">
+                  <option value="25">Messenger — 25 MB</option>
+                  <option value="16">WhatsApp — 16 MB</option>
+                  <option value="10">Signal — 10 MB</option>
+                  <option value="50">Telegram — 50 MB</option>
+                </optgroup>
+                <optgroup label="Correo electrónico">
+                  <option value="25">Gmail / Yahoo / AOL — 25 MB</option>
+                  <option value="10">Outlook / Hotmail — 10 MB</option>
+                  <option value="50">GMX — 50 MB</option>
+                </optgroup>
+              </select>
+              <div id="videoCustomSizeBox" class="mt-4">
+                <label class="mb-2 block text-sm font-medium">O escribe el tamaño exacto que quieres (MB o KB)</label>
+                <div class="grid grid-cols-[1fr_auto] gap-2">
+                  <input id="videoCustomValue" type="number" min="1" step="any" placeholder="Ej: 8 (si lo llenas, tiene prioridad)"
+                    class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-2.5 text-sm outline-none focus:border-violet-500" />
+                  <select id="videoCustomUnit" class="rounded-xl border border-white/10 bg-zinc-900 px-3 py-2.5 text-sm outline-none focus:border-violet-500">
+                    <option value="mb">MB</option>
+                    <option value="kb">KB</option>
+                  </select>
+                </div>
+              </div>
+              <p class="mt-2 text-xs leading-5 text-zinc-500">Calcula el bitrate según la duración del video y reintenta automáticamente si el resultado se pasa. Los correos suelen sumar ~33% por la codificación del adjunto: si falla, elige un límite menor.</p>
+            </div>
+
+            <details open class="mt-5 rounded-2xl border border-white/5 bg-black/10">
+              <summary class="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-300">Opciones avanzadas</summary>
+              <div class="grid gap-4 border-t border-white/5 p-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-2 block text-xs text-zinc-400">Bitrate de video personalizado</label>
+                  <input id="videoBitrate" type="number" min="150" max="20000" placeholder="Automático (kbps)"
+                    class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-2.5 text-sm outline-none focus:border-violet-500" />
+                </div>
+                <div>
+                  <label class="mb-2 block text-xs text-zinc-400">FPS máximo</label>
+                  <select id="videoFps" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-2.5 text-sm outline-none focus:border-violet-500">
+                    <option value="original">Mantener</option>
+                    <option value="30">30 FPS</option>
+                    <option value="24">24 FPS</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+
+            <button id="compressVideoBtn" class="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
+              <span id="videoBtnSpinner" class="spinner hidden"></span>
+              <span id="videoBtnText">Comprimir video</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div class="glass rounded-3xl p-5">
+            <div class="mb-3 flex items-center justify-between">
+              <p class="text-sm font-medium">Progreso</p>
+              <span id="videoProgressText" class="text-xs font-medium text-violet-300">0%</span>
+            </div>
+            <div class="h-2 overflow-hidden rounded-full bg-white/5">
+              <div id="videoProgressBar" class="h-full w-0 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all"></div>
+            </div>
+            <p id="videoStatus" class="mt-3 text-xs leading-5 text-zinc-500">Selecciona un video para comenzar.</p>
+          </div>
+
+          <div id="videoResult" class="hidden glass rounded-3xl p-5">
+            <video id="videoPreview" controls class="aspect-video w-full rounded-2xl bg-black object-contain"></video>
+            <p class="mt-4 text-xs text-zinc-400">Vista previa del video comprimido</p>
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl bg-white/[.035] p-4">
+                <p class="text-xs text-zinc-500">Original</p>
+                <p id="videoOriginalSize" class="mt-1 text-lg font-semibold"></p>
+              </div>
+              <div class="rounded-2xl bg-white/[.035] p-4">
+                <p class="text-xs text-zinc-500">Comprimido</p>
+                <p id="videoCompressedSize" class="mt-1 text-lg font-semibold"></p>
+                <p id="videoSaving" class="mt-1 text-xs text-emerald-400"></p>
+              </div>
+            </div>
+            <a id="downloadVideoBtn" download="video-comprimido.mp4"
+              class="mt-4 flex w-full items-center justify-center rounded-2xl border border-violet-500/30 bg-violet-500/10 px-5 py-3 text-sm font-semibold text-violet-200 hover:bg-violet-500/15">
+              Descargar video comprimido
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMAGE -->
+    <section id="view-image" class="view">
+      <div class="mb-7">
+        <button data-nav="home" class="mb-3 text-sm text-zinc-500 hover:text-white">← Volver</button>
+        <h1 class="text-3xl font-bold tracking-tight">Comprimir imágenes</h1>
+        <p class="mt-2 text-sm text-zinc-400">Compresión instantánea con Canvas. Puedes procesar varias imágenes a la vez.</p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
+        <div class="space-y-5">
+          <div id="imageDrop" class="glass cursor-pointer rounded-3xl border-2 border-dashed border-white/10 p-8 text-center transition">
+            <input id="imageInput" type="file" class="hidden" multiple accept="image/jpeg,image/png,image/webp" />
+            <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-sky-500/15 text-sky-300">
+              <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m4 17 5-5 4 4 2-2 5 4"/><circle cx="9" cy="9" r="2"/></svg>
+            </div>
+            <p class="mt-4 font-medium">Arrastra tus imágenes aquí</p>
+            <p class="mt-1 text-sm text-zinc-500">o haz clic para seleccionar varias</p>
+            <p class="mt-3 text-xs text-zinc-600">JPG · PNG · WebP</p>
+          </div>
+
+          <div class="glass rounded-3xl p-5">
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <label class="text-sm font-medium">Calidad</label>
+                <span id="qualityValue" class="rounded-lg bg-violet-500/10 px-2 py-1 text-xs font-medium text-violet-300">82%</span>
+              </div>
+              <input id="imageQuality" type="range" min="1" max="100" value="82" class="w-full" />
+            </div>
+            <div class="mt-5">
+              <label class="mb-2 block text-sm font-medium">Formato de salida</label>
+              <select id="imageFormat" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-3 text-sm outline-none focus:border-violet-500">
+                <option value="auto" selected>Automático inteligente (menor peso)</option>
+                <option value="original">Mantener original (PNG sin pérdida)</option>
+                <option value="webp">Convertir a WebP</option>
+                <option value="jpeg">Convertir a JPEG</option>
+              </select>
+            </div>
+            <p class="mt-2 text-xs leading-5 text-zinc-500">Automático compara WebP y JPEG con el original, y elige el archivo más ligero. En PNG la calidad del deslizador no reduce el peso a menos que conviertas a un formato con pérdida.</p>
+            <div class="mt-5">
+              <label class="mb-2 block text-sm font-medium">Ancho máximo opcional</label>
+              <select id="imageMaxWidth" class="w-full rounded-xl border border-white/10 bg-zinc-900 px-3 py-3 text-sm outline-none focus:border-violet-500">
+                <option value="original">Mantener dimensiones</option>
+                <option value="2560">2560 px</option>
+                <option value="1920">1920 px</option>
+                <option value="1600">1600 px</option>
+                <option value="1280">1280 px</option>
+                <option value="1080">1080 px</option>
+              </select>
+            </div>
+            <button id="processImagesBtn" class="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-600 to-violet-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">
+              <span id="imageBtnSpinner" class="spinner hidden"></span>
+              <span id="imageBtnText">Comprimir imágenes</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="text-sm font-medium">Resultados</p>
+              <p id="imageSummary" class="mt-1 text-xs text-zinc-500">Aún no hay imágenes procesadas.</p>
+            </div>
+            <button id="downloadZipBtn" class="hidden rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold hover:bg-white/10">Descargar todo en ZIP</button>
+          </div>
+          <div id="imageResults" class="space-y-4"></div>
+          <div id="imageSelectedPreview" class="hidden glass rounded-2xl p-4">
+            <p class="mb-3 text-sm font-medium">Vista previa de archivos originales</p>
+            <div id="imageSelectedGrid" class="grid grid-cols-2 gap-3 sm:grid-cols-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section aria-label="Guía de compresión multimedia" class="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
+    <div class="glass rounded-3xl p-6 sm:p-8">
+      <h2 class="text-xl font-semibold">Comprimir imágenes y videos gratis online — AVJ COMPRESS</h2>
+      <p class="mt-3 text-sm leading-7 text-zinc-400">
+        Reduce el tamaño de archivos JPG, JPEG, PNG y WebP, convierte imágenes a WebP o JPEG y comprime videos MP4, MOV y WebM desde tu navegador.
+        Disponible en todo el mundo, gratis y sin registro. No guardamos ni almacenamos tus fotos o videos en servidores: se procesan temporalmente en la memoria de tu navegador y desaparecen al cerrar o recargar la página.
+      </p>
+      <div class="mt-5 grid gap-5 md:grid-cols-2">
+        <article>
+          <h3 class="text-sm font-semibold">¿Cómo comprimir una imagen sin subirla a internet?</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-400">Selecciona tus fotos, ajusta la calidad, elige el formato automático y pulsa «Comprimir imágenes». Compara el tamaño original y final antes de descargar.</p>
+        </article>
+        <article>
+          <h3 class="text-sm font-semibold">¿Por qué un PNG a veces no disminuye?</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-400">PNG usa compresión sin pérdida y el control de calidad de Canvas no lo reduce. Para archivos más livianos prueba WebP, JPEG o el modo automático inteligente.</p>
+        </article>
+        <article>
+          <h3 class="text-sm font-semibold">¿Se pueden comprimir videos para WhatsApp, Telegram o correo?</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-400">Sí. Elige el límite de tu app (WhatsApp 16 MB, Telegram 50 MB, Signal 10 MB, Messenger 25 MB, Gmail 25 MB, Outlook 10 MB…) o escribe un tamaño exacto en MB o KB. El resultado depende de la duración del video.</p>
+        </article>
+        <article lang="en">
+          <h3 class="text-sm font-semibold">Free online image and video compressor</h3>
+          <p class="mt-2 text-sm leading-6 text-zinc-400">Compress JPG, PNG, WebP, MP4 and MOV locally in your browser. No file uploads, no sign-up. Adjust image quality, preview before and after, and download your results.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div id="socialModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="socialTitle">
+    <div class="glass relative w-full max-w-md rounded-3xl p-6 text-center shadow-glow sm:p-8">
+      <button id="socialClose" type="button" aria-label="Cerrar aviso" class="absolute right-4 top-4 rounded-lg p-2 text-zinc-400 hover:bg-white/10 hover:text-white">✕</button>
+      <div class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-500/15 text-2xl">✓</div>
+      <h2 id="socialTitle" class="text-xl font-bold">¡Muchas gracias por usar esta herramienta!</h2>
+      <p class="mt-2 text-sm leading-6 text-zinc-400">Tu archivo está listo. <b class="text-white">AVJ COMPRESS</b> es gratis, sin registro y no almacena tus archivos. ¡Síguenos para apoyar este proyecto!</p>
+      <div class="mt-6 grid gap-3 sm:grid-cols-2">
+        <a href="https://www.instagram.com/avj_comunity/" target="_blank" rel="noopener noreferrer" class="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white hover:brightness-110"><svg class="social-icon inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1" fill="currentColor" stroke="none"/></svg> Instagram ↗</a>
+        <a href="https://whatsapp.com/channel/0029Vb85FCMEAKWEOcpGEW2z" target="_blank" rel="noopener noreferrer" class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-500"><svg class="social-icon inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.2 11.5a8.3 8.3 0 0 1-12 7.4L3 20.5l1.6-5A8.3 8.3 0 1 1 20.2 11.5Z"/><path d="M8.4 8.4c-.6 1-.2 2.3 1.4 4s3.3 2.7 4.7 2.5c.7-.1 1.4-.7 1.5-1.3l-2.2-1.1-.9 1c-1.4-.6-2.1-1.4-2.7-2.7l1-1-1.3-2.1Z"/></svg> Canal WhatsApp ↗</a>
+      </div>
+      <button id="socialLater" type="button" class="mt-5 rounded-xl px-4 py-2 text-sm text-zinc-400 hover:text-white">Ahora no, ver mi archivo</button>
+    </div>
+  </div>
+
+  <div id="policyModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/80 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="policyTitle">
+    <section class="glass relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-3xl p-6 sm:p-8">
+      <button type="button" id="policyClose" class="absolute right-4 top-4 rounded-lg p-2 text-zinc-300 hover:bg-white/10" aria-label="Cerrar políticas">✕</button>
+      <h2 id="policyTitle" class="mb-5 pr-8 text-xl font-bold">Privacidad y cookies</h2>
+      <div class="space-y-5 text-sm leading-7 text-zinc-300">
+        <section><h3 class="font-semibold text-white">Política de privacidad</h3>
+          <p>AVJ COMPRESS permite comprimir imágenes y videos sin registrarse y gratuitamente. El contenido de los archivos se procesa localmente en el navegador; nuestra aplicación no los sube, almacena ni conserva en servidores. Los resultados y las vistas previas se mantienen temporalmente en la memoria del navegador durante la sesión y se eliminan al recargar o cerrar la pestaña.</p>
+        </section>
+        <section><h3 class="font-semibold text-white">Política de cookies</h3>
+          <p>AVJ COMPRESS no crea cookies propias para registro, seguimiento ni publicidad, y no utiliza herramientas de analítica integradas. La página carga recursos externos (Tailwind, FFmpeg, JSZip e imágenes alojadas en servicios de terceros), cuyos proveedores pueden recibir datos técnicos de conexión como la dirección IP y aplicar sus propias políticas. Estos recursos no reciben los archivos que comprimes.</p>
+        </section>
+        <section><h3 class="font-semibold text-white">Uso del servicio</h3>
+          <p>La compresión es gratuita y no requiere cuenta. La calidad y el tamaño final dependen del contenido, los ajustes, el navegador y la memoria disponible. El servicio se proporciona tal cual, sin garantizar una reducción concreta.</p>
+        </section>
+        <section><h3 class="font-semibold text-white">Derechos de autor</h3>
+          <p>© <span class="copyright-year">2026</span> AVJ COMPRESS. Todos los derechos reservados sobre la identidad y el diseño original. Los archivos que procesas siguen siendo tuyos y de sus respectivos titulares.</p>
+        </section>
+      </div>
+      <button type="button" id="policyDone" class="mt-6 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold hover:bg-violet-500">Entendido</button>
+    </section>
+  </div>
+
+  <footer class="mx-auto max-w-7xl px-4 pb-8 pt-4 text-center text-xs text-zinc-500 sm:px-6">
+    <p>AVJ COMPRESS es 100% gratis, sin registro y no almacena tus archivos en servidores.</p>
+    <div class="mt-3 flex flex-wrap items-center justify-center gap-3">
+      <button type="button" data-policy-open class="underline-offset-4 hover:text-white hover:underline">Privacidad y cookies</button>
+      <span aria-hidden="true">·</span>
+      <button type="button" data-policy-open class="underline-offset-4 hover:text-white hover:underline">Políticas de uso</button>
+      <span aria-hidden="true">·</span>
+      <span>© <span class="copyright-year">2026</span> AVJ COMPRESS. Todos los derechos reservados.</span>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+
+    const $ = (id) => document.getElementById(id);
+    const formatBytes = (bytes) => {
+      if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+      const units = ['B','KB','MB','GB'];
+      const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+      return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 2)} ${units[i]}`;
+    };
+    const safeBaseName = (name) => name.replace(/\.[^/.]+$/, '').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-');
+    const revokeIfBlob = (url) => { if (url && url.startsWith('blob:')) URL.revokeObjectURL(url); };
+
+    let socialCloseTimer = null;
+    function showSocialModal() {
+      clearTimeout(socialCloseTimer);
+      const modal = $('socialModal');
+      modal.classList.remove('hidden','dialog-closing');
+      modal.classList.add('flex','dialog-open');
+      $('socialClose').focus();
+    }
+    function hideSocialModal() {
+      const modal = $('socialModal');
+      if (modal.classList.contains('hidden') || modal.classList.contains('dialog-closing')) return;
+      modal.classList.remove('dialog-open');
+      modal.classList.add('dialog-closing');
+      socialCloseTimer = setTimeout(() => {
+        modal.classList.remove('dialog-closing','flex');
+        modal.classList.add('hidden');
+      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 270);
+    }
+    $('socialClose').addEventListener('click', hideSocialModal);
+    $('socialLater').addEventListener('click', hideSocialModal);
+    $('socialModal').addEventListener('click', e => { if (e.target === $('socialModal')) hideSocialModal(); });
+
+    function showPolicy() { $('policyModal').classList.remove('hidden'); $('policyClose').focus(); }
+    function hidePolicy() { $('policyModal').classList.add('hidden'); }
+    document.querySelectorAll('[data-policy-open]').forEach(btn => btn.addEventListener('click', showPolicy));
+    $('policyClose').addEventListener('click', hidePolicy);
+    $('policyDone').addEventListener('click', hidePolicy);
+    $('policyModal').addEventListener('click', e => { if (e.target === $('policyModal')) hidePolicy(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (!$('policyModal').classList.contains('hidden')) hidePolicy();
+        else hideSocialModal();
+      }
+    });
+    document.querySelectorAll('.copyright-year').forEach(el => { el.textContent = String(new Date().getFullYear()); });
+
+    // SPA navigation
+    function go(view) {
+      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+      $(`view-${view}`).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.replaceState(null, '', `#${view}`);
+    }
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => go(btn.dataset.nav)));
+    $('brandBtn').addEventListener('click', () => go('home'));
+    const initialView = ['home','video','image'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+    go(initialView);
+
+    // Drag & Drop
+    function bindDropZone(zone, input, handler) {
+      ['dragenter','dragover'].forEach(evt => zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.add('drop-active'); }));
+      ['dragleave','drop'].forEach(evt => zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.remove('drop-active'); }));
+      zone.addEventListener('click', () => input.click());
+      input.addEventListener('change', () => handler([...input.files]));
+      zone.addEventListener('drop', e => handler([...e.dataTransfer.files]));
+    }
+
+    // ---------------------------
+    // Video compressor
+    // ---------------------------
+    let selectedVideo = null;
+    let ffmpeg = null;
+    let ffmpegLoaded = false;
+    let videoOutputUrl = null;
+    let videoOriginalUrl = null;
+
+    if (location.protocol === 'file:') $('fileProtocolWarning').classList.remove('hidden');
+
+    const VIDEO_PRESETS = {
+      high:     { crf: 22, audio: '160k', fallbackBitrate: 3500 },
+      medium:   { crf: 28, audio: '128k', fallbackBitrate: 2200 },
+      low:      { crf: 33, audio: '96k',  fallbackBitrate: 1200 },
+      whatsapp: { crf: 31, audio: '96k',  fallbackBitrate: 1000 }
+    };
+
+    function setVideoProgress(percent, status) {
+      const p = Math.max(0, Math.min(100, Math.round(percent || 0)));
+      $('videoProgressBar').style.width = `${p}%`;
+      $('videoProgressText').textContent = `${p}%`;
+      if (status) $('videoStatus').textContent = status;
+    }
+
+    function resetVideoResult() {
+      $('videoResult').classList.add('hidden');
+      revokeIfBlob(videoOutputUrl);
+      videoOutputUrl = null;
+      $('videoPreview').removeAttribute('src');
+      setVideoProgress(0, selectedVideo ? 'Listo para comprimir.' : 'Selecciona un video para comenzar.');
+    }
+
+    function setSelectedVideo(file) {
+      if (!file) return;
+      if (!file.type.startsWith('video/') && !/\.(mp4|mov|webm|mkv|avi|m4v)$/i.test(file.name)) {
+        alert('Selecciona un archivo de video válido.');
+        return;
+      }
+      if (file.size > 1.5 * 1024 * 1024 * 1024) {
+        alert('Este archivo es muy grande para procesarlo de forma segura en la mayoría de navegadores. Intenta con un archivo menor a 1.5 GB.');
+        return;
+      }
+      selectedVideo = file;
+      $('videoFileName').textContent = file.name;
+      $('videoFileMeta').textContent = `${formatBytes(file.size)} · ${file.type || 'video'}`;
+      $('videoFileCard').classList.remove('hidden');
+      resetVideoResult();
+      revokeIfBlob(videoOriginalUrl);
+      videoOriginalUrl = URL.createObjectURL(file);
+      $('videoOriginalPreview').src = videoOriginalUrl;
+    }
+
+    bindDropZone($('videoDrop'), $('videoInput'), files => setSelectedVideo(files[0]));
+
+    $('clearVideoBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      selectedVideo = null;
+      revokeIfBlob(videoOriginalUrl); videoOriginalUrl = null;
+      $('videoOriginalPreview').removeAttribute('src');
+      $('videoInput').value = '';
+      $('videoFileCard').classList.add('hidden');
+      resetVideoResult();
+    });
+
+    async function ensureFFmpeg() {
+      // Instancia nueva en cada ejecución: FFmpeg.wasm 0.11 falla con exit(0) si se reutiliza.
+      try { if (ffmpeg) ffmpeg.exit(); } catch (_) {}
+      ffmpeg = null; ffmpegLoaded = false;
+      if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) {
+        throw new Error('No se pudo cargar FFmpeg.wasm. Revisa tu conexión o bloqueadores de contenido.');
+      }
+      const { createFFmpeg } = window.FFmpeg;
+      setVideoProgress(2, 'Cargando motor FFmpeg.wasm…');
+      ffmpeg = createFFmpeg({
+        log: false,
+        mainName: 'main',
+        corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
+        progress: ({ ratio }) => {
+          if (Number.isFinite(ratio)) setVideoProgress(Math.max(4, Math.min(99, ratio * 100)), 'Comprimiendo video…');
+        }
+      });
+      await ffmpeg.load();
+      ffmpegLoaded = true;
+      setVideoProgress(5, 'Motor FFmpeg cargado. Preparando archivo…');
+      return ffmpeg;
+    }
+
+    function getScaleFilter(resolution) {
+      if (resolution === 'original') return null;
+      const h = Number(resolution);
+      return `scale='if(gt(ih,${h}),trunc(iw*${h}/ih/2)*2,trunc(iw/2)*2)':'if(gt(ih,${h}),${h},trunc(ih/2)*2)'`;
+    }
+
+    // --- Tamaño objetivo (mensajería, correo, personalizado) ---
+
+    // 1 MB = 1024*1024 bytes (criterio conservador); 1 KB = 1024 bytes
+    function getTargetBytes() {
+      const raw = $('videoCustomValue').value.trim();
+      if (raw !== '') {
+        const n = Number(raw);
+        if (!(n > 0)) throw new Error('Escribe un tamaño personalizado válido (mayor que 0).');
+        return Math.floor(n * ($('videoCustomUnit').value === 'kb' ? 1024 : 1024 * 1024));
+      }
+      const v = $('videoTarget').value;
+      return v ? Number(v) * 1024 * 1024 : null;
+    }
+
+    function planForTarget(targetBytes, duration, factor, userRes) {
+      const totalK = (targetBytes * 8 / duration / 1000) * factor;
+      const audioK = totalK < 250 ? 32 : totalK < 600 ? 48 : 64;
+      const videoK = Math.max(50, Math.min(8000, Math.floor(totalK - audioK)));
+      const autoH = videoK < 300 ? 360 : videoK < 700 ? 480 : videoK < 1600 ? 720 : Infinity;
+      const userH = userRes === 'original' ? Infinity : Number(userRes);
+      const h = Math.min(autoH, userH);
+      return { videoK, audioK, res: Number.isFinite(h) ? String(h) : 'original' };
+    }
+
+    $('compressVideoBtn').addEventListener('click', async () => {
+      if (!selectedVideo) {
+        alert('Primero selecciona un video.');
+        return;
+      }
+
+      const btn = $('compressVideoBtn');
+      btn.disabled = true;
+      $('videoBtnSpinner').classList.remove('hidden');
+      $('videoBtnText').textContent = 'Procesando…';
+      resetVideoResult();
+
+      const preset = VIDEO_PRESETS[$('videoPreset').value];
+      const customBitrate = Number($('videoBitrate').value);
+      const resolution = $('videoResolution').value;
+      const fps = $('videoFps').value;
+
+      const inputExt = (selectedVideo.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp4';
+      const stamp = Date.now();
+      const inputName = `input_${stamp}.${inputExt}`;
+      const outputName = `output_${stamp}.mp4`;
+
+      try {
+        const targetBytes = getTargetBytes();
+        let duration = 0;
+        if (targetBytes) {
+          duration = $('videoOriginalPreview').duration;
+          if (!Number.isFinite(duration) || duration <= 0) {
+            throw new Error('No se pudo leer la duración del video (formato no compatible con la vista previa). Usa MP4/MOV/WebM o un preset normal.');
+          }
+        }
+
+        const arrayBuffer = await selectedVideo.arrayBuffer();
+        if (arrayBuffer.byteLength > 2 * 1024 * 1024 * 1024) {
+          throw new Error('FFmpeg.wasm no puede procesar archivos de 2 GB o más.');
+        }
+        const inputData = new Uint8Array(arrayBuffer);
+
+        const runOnce = async (plan) => {
+          const engine = await ensureFFmpeg();
+          engine.FS('writeFile', inputName, inputData);
+          const args = ['-y', '-i', inputName, '-map_metadata', '-1'];
+          const vf = getScaleFilter(plan ? plan.res : resolution);
+          if (vf) args.push('-vf', vf);
+          if (fps !== 'original') args.push('-r', fps);
+          args.push('-c:v', 'libx264', '-preset', 'veryfast');
+
+          if (plan) {
+            args.push('-b:v', `${plan.videoK}k`, '-maxrate', `${Math.round(plan.videoK * 1.1)}k`, '-bufsize', `${plan.videoK * 2}k`);
+          } else if (customBitrate >= 150) {
+            args.push('-b:v', `${Math.round(customBitrate)}k`, '-maxrate', `${Math.round(customBitrate * 1.25)}k`, '-bufsize', `${Math.round(customBitrate * 2)}k`);
+          } else {
+            args.push('-crf', String(preset.crf));
+          }
+
+          args.push('-c:a', 'aac', '-b:a', plan ? `${plan.audioK}k` : preset.audio,
+                    '-movflags', '+faststart', '-pix_fmt', 'yuv420p', outputName);
+          await engine.run(...args);
+          const out = engine.FS('readFile', outputName).slice();
+          try { engine.exit(); } catch (_) {}
+          ffmpegLoaded = false;
+          return new Blob([out.buffer], { type: 'video/mp4' });
+        };
+
+        let blob;
+        if (!targetBytes) {
+          setVideoProgress(7, 'Comprimiendo video…');
+          blob = await runOnce(null);
+        } else {
+          let factor = 0.92;
+          for (let attempt = 0; attempt < 3; attempt++) {
+            const plan = planForTarget(targetBytes, duration, factor, resolution);
+            setVideoProgress(7, `Comprimiendo para ≤ ${formatBytes(targetBytes)} (intento ${attempt + 1}/3)…`);
+            blob = await runOnce(plan);
+            if (blob.size <= targetBytes) break;
+            factor *= (targetBytes / blob.size) * 0.95;
+          }
+          if (blob.size > targetBytes) {
+            alert(`No se logró bajar de ${formatBytes(targetBytes)} (quedó en ${formatBytes(blob.size)}). El video es muy largo para ese límite; prueba un límite mayor o recórtalo.`);
+          }
+        }
+
+        revokeIfBlob(videoOutputUrl);
+        videoOutputUrl = URL.createObjectURL(blob);
+
+        $('videoPreview').src = videoOutputUrl;
+        $('downloadVideoBtn').href = videoOutputUrl;
+        $('downloadVideoBtn').download = `${safeBaseName(selectedVideo.name)}-comprimido.mp4`;
+
+        $('videoOriginalSize').textContent = formatBytes(selectedVideo.size);
+        $('videoCompressedSize').textContent = formatBytes(blob.size);
+
+        const saving = 100 - (blob.size / selectedVideo.size * 100);
+        $('videoSaving').textContent = saving > 0 ? `${saving.toFixed(1)}% menos` : `${Math.abs(saving).toFixed(1)}% más grande`;
+
+        $('videoResult').classList.remove('hidden');
+        setVideoProgress(100, 'Compresión completada.');
+        showSocialModal();
+
+      } catch (err) {
+        console.error(err);
+        const msg = String(err?.message || err);
+        if (location.protocol === 'file:') {
+          setVideoProgress(0, 'No se pudo iniciar FFmpeg desde file://. Despliega en Netlify o usa un servidor local.');
+        } else {
+          setVideoProgress(0, `Error: ${msg}`);
+        }
+        alert(`No se pudo comprimir el video.\n\n${msg}\n\nConsejo: prueba con un archivo más pequeño o usa Chrome/Edge actualizado.`);
+      } finally {
+        btn.disabled = false;
+        $('videoBtnSpinner').classList.add('hidden');
+        $('videoBtnText').textContent = 'Comprimir video';
+      }
+    });
+
+    // ---------------------------
+    // Image compressor
+    // ---------------------------
+    let selectedImages = [];
+    let processedImages = [];
+    let originalImagePreviewUrls = [];
+    function clearOriginalImagePreviews() {
+      originalImagePreviewUrls.forEach(revokeIfBlob);
+      originalImagePreviewUrls = [];
+      $('imageSelectedGrid').replaceChildren();
+    }
+
+    $('imageQuality').addEventListener('input', e => { $('qualityValue').textContent = `${e.target.value}%`; });
+
+    function setSelectedImages(files) {
+      const valid = files.filter(file => ['image/jpeg','image/png','image/webp'].includes(file.type));
+      if (!valid.length) {
+        alert('Selecciona imágenes JPG, PNG o WebP.');
+        return;
+      }
+      selectedImages = valid;
+      clearOriginalImagePreviews();
+      for (const file of valid.slice(0, 12)) {
+        const url = URL.createObjectURL(file);
+        originalImagePreviewUrls.push(url);
+        const wrap = document.createElement('div');
+        wrap.className = 'min-w-0 rounded-xl bg-white/[.03] p-2';
+        const img = document.createElement('img');
+        img.src = url; img.alt = 'Original: ' + file.name;
+        img.className = 'h-24 w-full rounded-lg object-contain';
+        const caption = document.createElement('p');
+        caption.className = 'mt-2 truncate text-xs text-zinc-400';
+        caption.textContent = file.name;
+        wrap.append(img, caption);
+        $('imageSelectedGrid').appendChild(wrap);
+      }
+      $('imageSelectedPreview').classList.remove('hidden');
+      processedImages.forEach(item => { revokeIfBlob(item.url); revokeIfBlob(item.originalUrl); });
+      processedImages = [];
+      $('imageResults').innerHTML = '';
+      $('downloadZipBtn').classList.add('hidden');
+      const total = valid.reduce((sum, f) => sum + f.size, 0);
+      $('imageSummary').textContent = `${valid.length} imagen(es) seleccionada(s) · ${formatBytes(total)} en total.`;
+    }
+
+    bindDropZone($('imageDrop'), $('imageInput'), setSelectedImages);
+
+    function canvasToBlob(canvas, type, quality) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (!blob) reject(new Error('El navegador no pudo generar la imagen comprimida.'));
+          else resolve(blob);
+        }, type, quality);
+      });
+    }
+
+    function loadImageFile(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(`No se pudo leer ${file.name}`)); };
+        img.src = url;
+      });
+    }
+
+    function targetMime(file, format) {
+      if (format === 'webp') return 'image/webp';
+      if (format === 'jpeg') return 'image/jpeg';
+      return file.type === 'image/png' ? 'image/png' : file.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+    }
+
+    function extFromMime(mime) {
+      if (mime === 'image/webp') return 'webp';
+      if (mime === 'image/png') return 'png';
+      return 'jpg';
+    }
+
+    async function compressImage(file, quality, format, maxWidth) {
+      const img = await loadImageFile(file);
+      const scale = maxWidth !== 'original' && img.naturalWidth > Number(maxWidth)
+        ? Number(maxWidth) / img.naturalWidth : 1;
+
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      if (!ctx) throw new Error('Canvas no está disponible en este navegador.');
+
+      const mime = targetMime(file, format);
+      if (mime === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, width, height);
+
+      let chosenMime = mime;
+      let chosenBlob = null;
+      const mimeCandidates = format === 'auto' ? ['image/webp', 'image/jpeg'] : [mime];
+      const candidates = [];
+      for (const candidateMime of mimeCandidates) {
+        let targetCanvas = canvas;
+        if (candidateMime === 'image/jpeg' && mime !== 'image/jpeg') {
+          targetCanvas = document.createElement('canvas');
+          targetCanvas.width = width; targetCanvas.height = height;
+          const c = targetCanvas.getContext('2d');
+          if (!c) continue;
+          c.fillStyle = '#fff'; c.fillRect(0, 0, width, height);
+          c.drawImage(canvas, 0, 0);
+        }
+        const blob = await canvasToBlob(targetCanvas, candidateMime, quality);
+        if (blob.type !== candidateMime) continue;
+        candidates.push({ blob, mime: candidateMime });
+      }
+      candidates.sort((a,b) => a.blob.size - b.blob.size);
+      if (candidates.length) {
+        chosenMime = candidates[0].mime;
+        chosenBlob = candidates[0].blob;
+      }
+      if (!chosenBlob) throw new Error('Este navegador no admite el formato elegido.');
+      if (format === 'auto' && file.size <= chosenBlob.size && scale === 1) {
+        return { blob: file, width, height, mime: file.type, preserved: true };
+      }
+      return { blob: chosenBlob, width, height, mime: chosenMime };
+    }
+
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, ch =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+    function renderImageResult(item, index) {
+      const saving = 100 - (item.blob.size / item.file.size * 100);
+      const result = document.createElement('article');
+      result.className = 'glass overflow-hidden rounded-3xl';
+
+      result.innerHTML = `
+        <div class="grid md:grid-cols-[180px_1fr]">
+          <div class="bg-black/30 p-3">
+            <div class="preview-before-after">
+              <div><p class="mb-2 text-center text-[11px] text-zinc-400">Antes</p><img src="${item.originalUrl}" alt="Antes" /></div>
+              <div><p class="mb-2 text-center text-[11px] text-zinc-400">Después</p><img src="${item.url}" alt="Después" /></div>
+            </div>
+          </div>
+          <div class="p-5">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-medium">${escapeHtml(item.file.name)}</p>
+                <p class="mt-1 text-xs text-zinc-500">${item.width} × ${item.height}px · ${item.mime.replace('image/','').toUpperCase()}</p>
+              </div>
+              <span class="rounded-full ${saving >= 0 ? 'bg-emerald-500/10 text-emerald-300' : 'bg-amber-500/10 text-amber-300'} px-2.5 py-1 text-xs font-semibold">
+                ${saving >= 0 ? '-' : '+'}${Math.abs(saving).toFixed(1)}%
+              </span>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl bg-white/[.035] p-3">
+                <p class="text-xs text-zinc-500">Original</p>
+                <p class="mt-1 font-semibold">${formatBytes(item.file.size)}</p>
+              </div>
+              <div class="rounded-xl bg-white/[.035] p-3">
+                <p class="text-xs text-zinc-500">Comprimida</p>
+                <p class="mt-1 font-semibold">${formatBytes(item.blob.size)}</p>
+              </div>
+            </div>
+            <a href="${item.url}" download="${item.outputName}" class="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-semibold hover:bg-white/10">Descargar</a>
+          </div>
+        </div>`;
+      $('imageResults').appendChild(result);
+    }
+
+    $('processImagesBtn').addEventListener('click', async () => {
+      if (!selectedImages.length) {
+        alert('Primero selecciona al menos una imagen.');
+        return;
+      }
+
+      const btn = $('processImagesBtn');
+      btn.disabled = true;
+      $('imageBtnSpinner').classList.remove('hidden');
+      $('imageBtnText').textContent = 'Procesando…';
+
+      processedImages.forEach(item => { revokeIfBlob(item.url); revokeIfBlob(item.originalUrl); });
+      processedImages = [];
+      $('imageResults').innerHTML = '';
+      $('downloadZipBtn').classList.add('hidden');
+
+      const quality = Number($('imageQuality').value) / 100;
+      const format = $('imageFormat').value;
+      const maxWidth = $('imageMaxWidth').value;
+
+      let originalTotal = 0;
+      let compressedTotal = 0;
+
+      try {
+        for (let i = 0; i < selectedImages.length; i++) {
+          $('imageSummary').textContent = `Procesando ${i + 1} de ${selectedImages.length}…`;
+
+          const file = selectedImages[i];
+          const result = await compressImage(file, quality, format, maxWidth);
+          const ext = extFromMime(result.mime);
+          const outputName = `${safeBaseName(file.name)}-comprimida.${ext}`;
+          const url = URL.createObjectURL(result.blob);
+
+          const originalUrl = URL.createObjectURL(file);
+          const item = { file, ...result, outputName, url, originalUrl };
+          processedImages.push(item);
+          renderImageResult(item, i);
+
+          originalTotal += file.size;
+          compressedTotal += result.blob.size;
+
+          await new Promise(requestAnimationFrame);
+        }
+
+        const saving = 100 - (compressedTotal / originalTotal * 100);
+        $('imageSummary').textContent =
+          `${processedImages.length} procesada(s) · ${formatBytes(originalTotal)} → ${formatBytes(compressedTotal)} · ${saving >= 0 ? saving.toFixed(1) + '% menos' : Math.abs(saving).toFixed(1) + '% más grande'}`;
+
+        if (processedImages.length > 1) $('downloadZipBtn').classList.remove('hidden');
+        if (processedImages.length) showSocialModal();
+      } catch (err) {
+        console.error(err);
+        alert(`No se pudieron procesar todas las imágenes.\n\n${err?.message || err}`);
+        $('imageSummary').textContent = 'Ocurrió un error durante el procesamiento.';
+      } finally {
+        btn.disabled = false;
+        $('imageBtnSpinner').classList.add('hidden');
+        $('imageBtnText').textContent = 'Comprimir imágenes';
+      }
+    });
+
+    $('downloadZipBtn').addEventListener('click', async () => {
+      if (!processedImages.length) return;
+      if (!window.JSZip) {
+        alert('No se pudo cargar JSZip.');
+        return;
+      }
+
+      const button = $('downloadZipBtn');
+      const oldText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Creando ZIP…';
+
+      try {
+        const zip = new JSZip();
+        processedImages.forEach(item => zip.file(item.outputName, item.blob));
+        const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'imagenes-comprimidas.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      } catch (err) {
+        console.error(err);
+        alert('No se pudo crear el ZIP.');
+      } finally {
+        button.disabled = false;
+        button.textContent = oldText;
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      revokeIfBlob(videoOutputUrl);
+      revokeIfBlob(videoOriginalUrl);
+      clearOriginalImagePreviews();
+      processedImages.forEach(item => { revokeIfBlob(item.url); revokeIfBlob(item.originalUrl); });
+    });
+  </script>
+</body>
+</html>
