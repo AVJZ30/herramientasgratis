@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#6d28d9">
 
 <!-- SEO TITLE: Palabras clave principales y marca -->
-<title>Generador de Cartones de Bingo Gratis | Creador de Bingo PDF | AVJ</title>
+<title>Generador de cartones de bingo gratis</title>
 <!-- SEO DESCRIPTION: Atractiva, con llamada a la acción y palabras clave -->
 <meta name="description" content="Crea cartones de bingo personalizados gratis. Genera hojas A4 en PDF con números, letras y figuras. Sin registro. Ideal para fiestas, escuelas y eventos. ¡Descarga ya!">
 <meta name="keywords" content="generador de bingo, cartones de bingo, bingo gratis, bingo PDF, crear bingo, bingo para imprimir, bingo familiar, bingo educativo, bingo generator">
@@ -15,13 +15,13 @@
 <!-- Open Graph / Facebook / WhatsApp -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://avjbingosgenerator.netlify.app/">
-<meta property="og:title" content="Generador de Cartones de Bingo Gratis | AVJ">
+<meta property="og:title" content="Generador de cartones de bingo gratis">
 <meta property="og:description" content="Crea, personaliza y descarga tus cartones de bingo en PDF. ¡Totalmente gratis y sin registro!">
 <meta property="og:image" content="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Generador de Cartones de Bingo Gratis | AVJ">
+<meta name="twitter:title" content="Generador de cartones de bingo gratis">
 <meta name="twitter:description" content="Crea y descarga cartones de bingo en PDF gratis. Personaliza colores, figuras y más.">
 <meta name="twitter:image" content="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg">
 
@@ -33,7 +33,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "AVJ BingoGenerator",
+  "name": "Generador de bingo",
   "url": "https://avjbingosgenerator.netlify.app/",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "All",
@@ -289,7 +289,7 @@ font-size:11px;font-weight:850;opacity:0;transform:translateY(8px);transition:.2
 @keyframes popIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
 
 
-/* ===== Responsive final polish: AVJ BingoGenerator v6 ===== */
+/* ===== Responsive final polish: Generador de bingo v6 ===== */
 html,body{max-width:100%;overflow-x:hidden}
 img{max-width:100%}
 .content,.controls,.workspace,.panel,.preview-bg{min-width:0}
@@ -557,7 +557,7 @@ button,.btn{min-height:42px}
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="brand-logo image-logo"><img src="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg" alt="AVJ COMUNITY"></div><div><h1>AVJ BingoGenerator</h1><p>Crea cartones, respeta reglas de bingo y descarga en PDF A4.</p></div></div>
+  <div class="brand"><div class="brand-logo image-logo"><img src="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg" alt="Ícono del generador de bingo"></div><div><h1>Generador de bingo</h1><p>Crea cartones, respeta reglas de bingo y descarga en PDF A4.</p></div></div>
   <div class="actions">
     <button class="btn ghost" id="mixBtn">🔀 <span>Generar nuevos</span></button>
     <button class="btn soft" id="saveBtn">💾 <span>Guardar</span></button>
@@ -732,8 +732,8 @@ button,.btn{min-height:42px}
 <div class="sec">
 <h3>4. Código de cada cartón</h3>
 <label>Prefijo</label>
-<input id="codePrefix" type="text" value="AVJ" maxlength="12">
-<div class="help">Ejemplo: AVJ-0001, AVJ-0002, AVJ-0003…</div>
+<input id="codePrefix" type="text" value="BINGO" maxlength="12">
+<div class="help">Ejemplo: BINGO-0001, BINGO-0002, BINGO-0003…</div>
 </div>
 
 <div class="sec">
@@ -745,7 +745,7 @@ button,.btn{min-height:42px}
   </div>
   <input id="wmEnabled" type="checkbox" checked>
 </div>
-<div style="margin-top:9px"><label>Texto</label><input id="wmText" type="text" value="AVJ"></div>
+<div style="margin-top:9px"><label>Texto</label><input id="wmText" type="text" value="BINGO"></div>
 <div style="margin-top:9px"><label>Visibilidad</label><input id="wmOpacity" type="range" min="2" max="16" value="5"><div class="help"><span id="wmValue">5</span>%</div></div>
 </div>
 
@@ -791,7 +791,7 @@ button,.btn{min-height:42px}
   </div>
   <input id="footerEnabled" type="checkbox" checked>
 </div>
-<div style="margin-top:9px"><label>Enlace QR</label><input id="qrUrl" type="url" value="https://avjcomunity.netlify.app/"></div>
+<div style="margin-top:9px"><label>Enlace QR</label><input id="qrUrl" type="url" value="https://avjcomunity.com/"></div>
 <div style="margin-top:9px"><label>Texto</label><textarea id="footerText" rows="3">Descubre muchas más de nuestras herramientas y visita nuestra tienda de plataformas como Netflix y más.</textarea></div>
 </div>
 
@@ -819,10 +819,10 @@ const state={
  mode:'classic75',shapeNumber:'random',shapeLetter:'random',rows:5,cols:5,count:24,perPage:4,
  pageHeaderType:'text',pageTitle:'BINGO',pageSubtitle:'Cartones de bingo',eventAddress:'',eventTime:'',pageHeaderImage:'',headerAlign:'center',headerFont:'system-ui, sans-serif',
  showColumnHeads:true,columnLabels:'B,I,N,G,O',
- codePrefix:'AVJ',wmEnabled:true,wmText:'AVJ',wmOpacity:5,
+ codePrefix:'BINGO',wmEnabled:true,wmText:'BINGO',wmOpacity:5,
  borderColor:'#111111',cellBg:'#ffffff',borderWidth:2,
  freeEnabled:true,freeType:'blank',freeImage:'',
- footerEnabled:true,qrUrl:'https://avjcomunity.netlify.app/',
+ footerEnabled:true,qrUrl:'https://avjcomunity.com/',
  footerText:'Descubre muchas más de nuestras herramientas y visita nuestra tienda de plataformas como Netflix y más.',
  cells:[],imageLibrary:[],selected:null
 };
@@ -834,8 +834,8 @@ function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Ma
 function total(){return state.rows*state.cols}
 function center(){if(!state.freeEnabled||state.rows%2===0||state.cols%2===0)return-1;return Math.floor(state.rows/2)*state.cols+Math.floor(state.cols/2)}
 function ensure(){while(state.cells.length<total())state.cells.push({text:'',image:''});if(state.cells.length>total())state.cells.length=total()}
-function code(i){const p=(state.codePrefix||'AVJ').replace(/\s+/g,'').toUpperCase();return `${p}-${String(i+1).padStart(4,'0')}`}
-function qr(el,size=25){el.innerHTML='';try{new QRCode(el,{text:state.qrUrl||'https://avjcomunity.netlify.app/',width:size,height:size,correctLevel:QRCode.CorrectLevel.M})}catch(e){el.textContent='QR'}}
+function code(i){const p=(state.codePrefix||'BINGO').replace(/\s+/g,'').toUpperCase();return `${p}-${String(i+1).padStart(4,'0')}`}
+function qr(el,size=25){el.innerHTML='';try{new QRCode(el,{text:state.qrUrl||'https://avjcomunity.com/',width:size,height:size,correctLevel:QRCode.CorrectLevel.M})}catch(e){el.textContent='QR'}}
 
 function getLabels(){
  if(state.mode==='classic75') return ['B','I','N','G','O'];
@@ -859,7 +859,7 @@ function pageWatermarksHTML(){
 function pageFooterHTML(){
  if(!state.footerEnabled)return '';
  return `<div class="page-footer">
-   <div><strong>AVJ COMUNITY</strong><br>${esc(state.footerText)}</div>
+   <div><strong>Creado por AVJ COMUNITY</strong><br>${esc(state.footerText)}</div>
    <div class="qr"></div>
  </div>`;
 }
@@ -1228,7 +1228,7 @@ $('pdfBtn').addEventListener('click',async()=>{
      pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,210,297,undefined,'FAST');
    }
    const name=(state.pageTitle||'Bingo').replace(/[^\p{L}\p{N}\-_ ]/gu,'').trim().replace(/\s+/g,'_');
-   pdf.save(`${name||'Bingo'}_AVJ.pdf`);
+   pdf.save(`${name||'Bingo'}_Bingo.pdf`);
    toast('PDF generado correctamente');
    if(overlay)overlay.classList.remove('show');
    setTimeout(()=>{const t=$('thanksModal');if(t){t.classList.add('show');t.setAttribute('aria-hidden','false');}},250);
@@ -1270,12 +1270,12 @@ window.closeThanksModal = function(){
 };
 
 
-document.querySelectorAll('img[alt="AVJ COMUNITY"]').forEach(img=>{
+document.querySelectorAll('img[alt="Ícono del generador de bingo"]').forEach(img=>{
   img.addEventListener('error',()=>{
     img.style.display='none';
     const parent=img.parentElement;
     if(parent && parent.classList.contains('brand-logo')){
-      parent.textContent='AVJ';
+      parent.textContent='★';
       parent.classList.remove('image-logo');
     }
   });
@@ -1294,12 +1294,12 @@ document.querySelectorAll('img[alt="AVJ COMUNITY"]').forEach(img=>{
 
 <div class="thanks-modal" id="thanksModal" aria-hidden="true">
   <div class="thanks-card">
-    <img src="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg" alt="AVJ COMUNITY">
+    <img src="https://i.pinimg.com/736x/96/89/16/96891628d05460ebb9fcc02f4e3acc45.jpg" alt="Ícono del generador de bingo">
     <h3>¡Muchas gracias!</h3>
     <p>Muchas gracias por usar nuestra herramienta gratuita.<br>No olvides seguirnos en nuestras redes:</p>
     <div class="social-links">
-      <a href="https://www.instagram.com/avj_comunity/" target="_blank" rel="noopener noreferrer">Instagram · @avj_comunity</a>
-      <a href="https://www.tiktok.com/@avjcomunity" target="_blank" rel="noopener noreferrer">TikTok · @avjcomunity</a>
+      <a href="https://www.instagram.com/avj_comunity/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.tiktok.com/@avjcomunity" target="_blank" rel="noopener noreferrer">TikTok</a>
     </div>
     <button class="btn primary thanks-close" id="thanksClose" type="button" onclick="closeThanksModal()">Cerrar</button>
   </div>
